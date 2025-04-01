@@ -1,26 +1,80 @@
 body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #fff5f7;
-    color: #333;
-    overflow-x: hidden;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  overflow: hidden; /* Evita el scroll inicial */
+  background-color: #fff5f7;
+}
+
+.sakura-section {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sakura-canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.sakura-title {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(3rem, 8vw, 6rem);
+  color: #ff4d6d;
+  font-family: 'Poppins', sans-serif;
+  text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out forwards;
+  padding-right: 60%;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%);
   }
-  
-  nav {
-    background-color: rgba(248, 193, 204, 0.9); /* Rosa translúcido */
-    padding: 15px;
-    position: sticky;
-    top: 0;
-    z-index: 2;
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
   }
-  
-  nav a {
-    margin: 0 20px;
-    color: #5d3a47;
-    text-decoration: none;
-    font-weight: bold;
+}
+
+/* 🌸 Hojas de Sakura flotando */
+.sakura-leaves {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sakura-leaf {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background-image: url('../assets/blossom.png');
+  background-size: cover;
+  opacity: 0.8;
+  animation: fall linear infinite;
+  left: calc(100% * var(--i) / 30);
+  animation-duration: calc(4s + var(--i) * 0.5s);
+  animation-delay: calc(-1s * var(--i) * 0.3s);
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 0;
   }
-  
-  nav a:hover {
-    color: #ff8099;
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 1;
   }
+}

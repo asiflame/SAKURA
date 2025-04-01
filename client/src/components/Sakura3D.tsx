@@ -1,35 +1,41 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const Sakura3D: React.FC = () => {
   const mountRef = useRef<HTMLDivElement>(null);
   const sakuraRef = useRef<THREE.Group | null>(null);
+  const [showTitle, setShowTitle] = useState(false);
+  let scrollProgress = 0;
 
   useEffect(() => {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
+
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xffffff, 0); // 🔥 Evita pantallazos blancos
 
     if (mountRef.current) {
       mountRef.current.appendChild(renderer.domElement);
     }
 
+    // Iluminación
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(5, 5, 5);
     scene.add(light);
-    scene.add(new THREE.AmbientLight(0x404040));
+    scene.add(new THREE.AmbientLight(0x808080));
 
+    // Cargar el modelo
     const loader = new GLTFLoader();
     loader.setPath('/models/');
-    
+
     loader.load(
       'scene.gltf',
       (gltf) => {
         sakuraRef.current = gltf.scene;
-        sakuraRef.current.scale.set(0.15, 0.15, 0.15); // Reducimos aún más el tamaño del árbol
-        sakuraRef.current.position.set(0, -2, 0); // Ajustamos la posición para centrarlo mejor
+        sakuraRef.current.scale.set(0.03, 0.03, 0.03); // Aumentamos el tamaño
+        sakuraRef.current.position.set(0, -6, 0); // Bajamos más el modelo 3D
         scene.add(sakuraRef.current);
       },
       undefined,
@@ -38,7 +44,22 @@ const Sakura3D: React.FC = () => {
       }
     );
 
-    camera.position.set(0, 3, 15); // Alejamos la cámara aún más para ver el modelo completo
+    camera.position.set(0, 0, 10);
+
+    // 🔄 Nueva animación: movimiento suave
+    const handleScroll = (e: WheelEvent) => {
+      e.preventDefault();
+      const delta = e.deltaY * 0.002;
+      scrollProgress = Math.min(Math.max(scrollProgress + delta, 0), 1);
+
+      if (sakuraRef.current) {
+        sakuraRef.current.rotation.y = scrollProgress * 0.5;
+        sakuraRef.current.scale.set(0.03 + scrollProgress * 0.01, 0.03 + scrollProgress * 0.01, 0.03 + scrollProgress * 0.01);
+        if (scrollProgress >= 1) setShowTitle(true);
+      }
+    };
+
+    window.addEventListener('wheel', handleScroll, { passive: false });
 
     const animate = () => {
       requestAnimationFrame(animate);
@@ -46,29 +67,8 @@ const Sakura3D: React.FC = () => {
     };
     animate();
 
-    const handleScroll = () => {
-      if (sakuraRef.current) {
-        const scrollY = window.scrollY;
-        const maxScroll = document.body.scrollHeight - window.innerHeight;
-        const rotationY = (scrollY / maxScroll) * Math.PI * 2; // Gira 360°
-        sakuraRef.current.rotation.y = rotationY;
-
-        // Efecto Parallax: movemos la cámara ligeramente hacia arriba
-        camera.position.y = 3 + (scrollY / maxScroll) * 2;
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('wheel', handleScroll);
       if (mountRef.current) {
         mountRef.current.removeChild(renderer.domElement);
       }
@@ -76,7 +76,12 @@ const Sakura3D: React.FC = () => {
     };
   }, []);
 
-  return <div ref={mountRef} style={{ height: '200vh', position: 'sticky', top: 0, overflow: 'hidden' }} />;
+  return (
+    <div className="sakura-section">
+      <div ref={mountRef} className="sakura-canvas" />
+      {showTitle && <h1 className="sakura-title" style={{ color: 'black' }}>"SAKURA"</h1>}
+    </div>
+  );
 };
 
 export default Sakura3D;
