@@ -1,0 +1,94 @@
+/* ObentoSection.css */
+.obento-section {
+  padding: 60px 20px;
+  background-color: #ffffff; /* Fondo blanco */
+  text-align: center;
+}
+
+.obento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;  /* Separa las tarjetas; aumenta este valor si deseas más espacio */
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-items: center; /* Centra las tarjetas horizontalmente */
+  align-items: start;    /* Cada tarjeta conserva su altura individual */
+}
+
+/* Tarjeta colapsada: se muestra solo con el texto */
+.obento-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s, min-height 0.3s;
+  position: relative;
+  overflow: hidden; /* Oculta el overlay cuando no está activo */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 350px;
+  min-height: 200px; /* Altura mínima en estado colapsado */
+}
+
+/* Tarjeta expandida: solo la tarjeta clicada */
+.obento-card.expanded {
+  min-height: 450px; /* Altura expandida para mostrar el overlay */
+}
+
+.obento-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.obento-card-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.2rem;
+  color: #FF4D6D;
+  margin-bottom: 10px;
+}
+
+.obento-card-description {
+  font-family: 'Arial', sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #555;
+}
+
+/* Overlay: inicialmente oculto; al colapsar la tarjeta se desliza hacia abajo */
+.obento-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  padding: 15px;
+  border-top: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  /* Para enfatizar el movimiento hacia abajo, usamos 110% (puedes ajustar este valor) */
+  transform: translateY(110%);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Overlay visible solo en la tarjeta expandida */
+.obento-card.expanded .obento-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.obento-overlay img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.obento-note {
+  font-family: 'Arial', sans-serif;
+  font-size: 0.9rem;
+  color: #777;
+}

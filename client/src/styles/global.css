@@ -1,9 +1,73 @@
+/* global.css */
+html,
 body {
   margin: 0;
-  font-family: 'Arial', sans-serif;
-  overflow: hidden; /* Evita el scroll inicial */
-  background-color: #fff5f7;
+  width: 100%;
+  overflow-x: hidden;
+  background-color: #ffffff;
 }
+
+.app-container {
+  position: relative;
+}
+
+/* Espaciador para separar la sección 3D del Content Section */
+.spacer {
+  height: 200px; /* Ajusta este valor según la separación deseada */
+}
+
+/* Si deseas usar el parallax, ajusta este fondo: */
+.parallax-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+}
+
+/* El overlay que transiciona de blanco a negro.
+   Su opacidad se actualizará en función del scroll. */
+/* Overlay de transición de fondo de blanco a negro */
+.bg-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1F1F1F;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10; /* Bajo, para que quede detrás del contenido */
+  transition: opacity 0.1s linear;
+}
+
+/* Contenedor de contenido (cards) */
+.content-section {
+  position: relative;  /* Asegura que z-index tenga efecto */
+  z-index: 100;        /* Mayor que el overlay, para que se muestre encima */
+  
+  /* Resto de los estilos que hayas definido */
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas: 
+    "image text1"
+    "image text2";
+  gap: 20px;
+  max-width: 1200px;
+  margin: 30px auto 40px; /* Ajustamos la posición para aparecer más arriba */
+  padding: 20px;
+  /* Si no quieres un fondo negro en la sección, puedes omitir o modificar esto */
+  /* background-color: transparent; */
+}
+
+
+/* Este contenedor relleno permite bajar bastante aunque no haya contenido real. */
+.scroll-fill {
+  height: 200vh; /* Ajusta este valor según lo "bajo" que quieras permitir */
+}
+
 
 .sakura-section {
   position: relative;
@@ -27,12 +91,27 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: clamp(3rem, 8vw, 6rem);
-  color: #ff4d6d;
+  color: #000000;
   font-family: 'Poppins', sans-serif;
   text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
   opacity: 0;
   animation: fadeIn 1s ease-in-out forwards;
   padding-right: 60%;
+}
+
+.sakura-subtitle {
+  position: absolute;
+  top: 70%;
+  left: 110%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(3rem, 8vw, 6rem);
+  color: #000000;
+  font-family: 'Poppins', sans-serif;
+  text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out forwards;
+  padding-right: 60%;
+  white-space: nowrap; /* Evita salto de línea */
 }
 
 @keyframes fadeIn {
@@ -46,35 +125,53 @@ body {
   }
 }
 
-/* 🌸 Hojas de Sakura flotando */
+/* Contenedor de hojas: ocupa toda la pantalla y se superpone en la escena */
 .sakura-leaves {
-  position: absolute;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
   pointer-events: none;
+  overflow: hidden;
+  z-index: 6; /* Ajusta según la disposición de capas */
 }
 
 .sakura-leaf {
   position: absolute;
   width: 30px;
   height: 30px;
-  background-image: url('../assets/blossom.png');
+  background-image: url('/assets/blossom.png'); /* Asegúrate de la ruta correcta */
   background-size: cover;
-  opacity: 0.8;
-  animation: fall linear infinite;
-  left: calc(100% * var(--i) / 30);
-  animation-duration: calc(4s + var(--i) * 0.5s);
-  animation-delay: calc(-1s * var(--i) * 0.3s);
+  opacity: 0.9;
+  will-change: transform;
+  animation: fall ease-in-out infinite;
 }
 
+/* Animación de caída y oscilación de las hojas */
 @keyframes fall {
   0% {
-    transform: translateY(-100vh) rotate(0deg);
+    transform: translate3d(0, -10vh, 0) rotate(0deg);
     opacity: 0;
   }
-  100% {
-    transform: translateY(100vh) rotate(360deg);
+  20% {
+    transform: translate3d(10vw, 10vh, 0) rotate(15deg);
     opacity: 1;
   }
+  40% {
+    transform: translate3d(-10vw, 30vh, 0) rotate(45deg);
+  }
+  60% {
+    transform: translate3d(10vw, 50vh, 0) rotate(90deg);
+  }
+  80% {
+    transform: translate3d(-10vw, 70vh, 0) rotate(150deg);
+  }
+  100% {
+    transform: translate3d(0, 100vh, 0) rotate(200deg);
+    opacity: 0;
+  }
 }
+
+
+
